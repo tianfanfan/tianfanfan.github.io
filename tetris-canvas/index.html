@@ -136,8 +136,10 @@
         let x = this.x
         let y = this.y
         let piece2dArray = this.piece2dArray
-        this.elCanvas.style.left = this.position.x
-        this.elCanvas.style.top = this.position.y
+        // 第一次先设置位置，再画 canvas
+        this.changeDomPosition()
+        // this.elCanvas.style.left = this.position.x
+        // this.elCanvas.style.top = this.position.y
         // let bgColor = this.bgColor || getRandomColor()
         for (let i = 0; i < piece2dArray.length; i++) {
           let arrII = piece2dArray[i]
