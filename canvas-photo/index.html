@@ -90,7 +90,7 @@
         }
 
         /*根据奇数偶数性质来决定格子背景颜色*/
-        let color = colorArray[(x * (yCount - 1) + y - 1) % colorArrayLength]
+        let color = colorArray[(x * (yCount - 1) + y) % colorArrayLength]
         canvasContext.fillStyle = color
         canvasContext.fillRect(x * size, y * size, size, size)
       }
