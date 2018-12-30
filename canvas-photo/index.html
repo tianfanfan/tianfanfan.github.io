@@ -96,23 +96,6 @@
       }
     }
 
-    /*随机生成方块的坐标*/
-    const createOnePieceData = async () => {
-      var randomNum = _.random(0, 7)
-      const resultMap = {
-        0: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]],
-        1: [[1, 0, 0], [1, 1, 1], [0, 0, 0]],
-        2: [[0, 0, 1], [1, 1, 1], [0, 0, 0]],
-        3: [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
-        4: [[1, 1, 0], [0, 1, 1], [0, 0, 0]],
-        5: [[0, 1, 1], [1, 1, 0], [0, 0, 0]],
-        6: [[1, 1], [1, 1]],
-        7: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
-      }
-
-      return resultMap[randomNum]
-    }
-
     /*绘制线条*/
     const drawLine = async (canvasContext, { xCount, yCount, size, lineWidth }) => {
       canvasContext.lineWidth = lineWidth
@@ -124,7 +107,6 @@
         canvasContext.moveTo(dx, 0)
         canvasContext.lineTo(dx, yCount * size)
         canvasContext.stroke()
-        await returnPromise()
       }
 
       for (let y = 0; y < yCount; y++) {
@@ -133,7 +115,6 @@
         canvasContext.moveTo(0, dy)
         canvasContext.lineTo(xCount * size, dy)
         canvasContext.stroke()
-        await returnPromise()
       }
     }
 
@@ -165,22 +146,9 @@
       canvasContext.fillRect(x * size, y * size, size, size)
     }
 
-    /*通过坐标绘制，底面*/
-    const drawCheckerboardBy2dArray = array => {
-      for (let i = 0; i < array.length; i++) {
-        for (let j = 0; j < array[i].length; j++) {
-          // console.log(array[i][j])
-          let value = array[i][j]
-          if (value === 1) {
-          }
-        }
-      }
-    }
-
     function main({ xCount, yCount, size, lineWidth }) {
       var elsCanvas = document.getElementById('els')
       var canvasContext = elsCanvas.getContext('2d')
-      /*绘制底层表格*/
       let startGlint = async () => {
         await drawCheckerboardStart(elsCanvas, {
           xCount,
@@ -194,11 +162,8 @@
         }, _.random(1500, 2500))
       }
       startGlint()
-      /*二维数组数据储存*/
-      // var checkerboard2DCoordinate = buildBlockCoordinate2DArray(xCount, yCount)
-
-      // drawCheckerboardBy2dArray(checkerboard2DCoordinate)
     }
+
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
     var size = 20
