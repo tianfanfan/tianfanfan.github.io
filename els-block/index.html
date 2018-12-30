@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Tianfanfan</title>
+    <title>ELS</title>
     <style type="text/css">
       .canvas {
         text-align: center;
@@ -21,7 +21,6 @@
   </head>
   <body>
     <div class="canvas"><canvas id="els"></canvas></div>
-    <main></main>
   </body>
   <script src="../utils/lodash.min.js"></script>
   <script defer>
@@ -155,7 +154,7 @@
         // 渲染高度
         yCount,
         // 渲染速度
-        speed: _.random(10, yCount + xCount)
+        speed: 10
       })
       await returnPromise(200)
       await drawLine(canvasContext, { xCount, yCount, size, lineWidth })
