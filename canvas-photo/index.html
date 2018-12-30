@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Tianfanfan</title>
+    <style type="text/css">
+      .canvas {
+        text-align: center;
+        font-size: 0;
+      }
+      canvas {
+        min-width: 40px;
+      }
+      body,
+      html {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas"><canvas id="els"></canvas></div>
+    <main></main>
+  </body>
+  <script src="../utils/lodash.min.js"></script>
+  <script defer>
+    /*
+     * xCount 宽格子个数
+     * yCount 高格子个数
+     * size 方块格子大小
+     */
+    const getRandomColor = () => {
+      return `rgba(${_.random(0, 255)},${_.random(0, 255)},${_.random(0, 255)},${_.random(
+        0.5,
+        1,
+        true
+      ).toFixed(2)})`
+    }
+
+    /*返回一个一定时间内完成的 promise*/
+    const returnPromise = time => {
+      return new Promise(resolve => requestAnimationFrame(resolve))
+      // return new Promise(resolve => setTimeout(resolve, time || 0))
+    }
+
+    /*生棋盘坐标数组*/
+    /*格子的坐标集合，展平的*/
+    const buildBlockCoordinate1DArray = (xCount, yCount) => {
+      let blockCoordinateArray = []
+      for (let y = 0; y < yCount; y++) {
+        for (let x = 0; x < xCount; x++) {
+          blockCoordinateArray.push(`${x},${y}`)
+        }
+      }
+      return blockCoordinateArray
+    }
+
+    const buildBlockCoordinate2DArray = (xCount, yCount) => {
+      let blockCoordinateArray = []
+      for (let y = 0; y < yCount; y++) {
+        blockCoordinateArray.push(new Array(yCount).fill(undefined))
+      }
+      // console.table(blockCoordinateArray)
+      return blockCoordinateArray
+    }
+
+    /*随机填充颜色*/
+    const randomFill = async (
+      canvasContext,
+      blockCoordinateArray,
+      colorArray,
+      { size, xCount, yCount, speed }
+    ) => {
+      let length = blockCoordinateArray.length
+      let colorArrayLength = colorArray.length
+      let stap = 0
+      for (var deep = 1; length > 1 && deep < 9000; deep++) {
+        length = blockCoordinateArray.length
+        let i = _.random(0, length - 1)
+        let blockCoordinate = blockCoordinateArray
+          .splice(i, 1)[0]
+          .split(',')
+          .map(v => +v)
+        let x = blockCoordinate[0]
+        let y = blockCoordinate[1]
+        if (++stap > speed) {
+          await returnPromise()
+          stap = 0
+        }
+
+        /*根据奇数偶数性质来决定格子背景颜色*/
+        let color = colorArray[(x * (yCount - 1) + y - 1) % colorArrayLength]
+        canvasContext.fillStyle = color
+        canvasContext.fillRect(x * size, y * size, size, size)
+      }
+    }
+
+    /*随机生成方块的坐标*/
+    const createOnePieceData = async () => {
+      var randomNum = _.random(0, 7)
+      const resultMap = {
+        0: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]],
+        1: [[1, 0, 0], [1, 1, 1], [0, 0, 0]],
+        2: [[0, 0, 1], [1, 1, 1], [0, 0, 0]],
+        3: [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
+        4: [[1, 1, 0], [0, 1, 1], [0, 0, 0]],
+        5: [[0, 1, 1], [1, 1, 0], [0, 0, 0]],
+        6: [[1, 1], [1, 1]],
+        7: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
+      }
+
+      return resultMap[randomNum]
+    }
+
+    /*绘制线条*/
+    const drawLine = async (canvasContext, { xCount, yCount, size, lineWidth }) => {
+      canvasContext.lineWidth = lineWidth
+      canvasContext.lineCap = 'round'
+      canvasContext.strokeStyle = getRandomColor()
+      for (let x = 0; x < xCount; x++) {
+        const dx = x * size
+        canvasContext.beginPath()
+        canvasContext.moveTo(dx, 0)
+        canvasContext.lineTo(dx, yCount * size)
+        canvasContext.stroke()
+        await returnPromise()
+      }
+
+      for (let y = 0; y < yCount; y++) {
+        const dy = y * size
+        canvasContext.beginPath()
+        canvasContext.moveTo(0, dy)
+        canvasContext.lineTo(xCount * size, dy)
+        canvasContext.stroke()
+        await returnPromise()
+      }
+    }
+
+    /*绘制棋盘格*/
+    const drawCheckerboardStart = async (el, { xCount, yCount, size, lineWidth, colorCount }) => {
+      /*设置画布大小*/
+      var canvasContext = el.getContext('2d')
+      el.width = xCount * size
+      el.height = yCount * size
+      /*绘制画布背景色*/
+      let colorArray = new Array(colorCount || 2).fill(0).map(v => getRandomColor())
+      // let colorArray = ['rgba(200,0,0,0.9)', 'rgba(0, 0, 200, 0.9)']
+
+      await randomFill(canvasContext, buildBlockCoordinate1DArray(xCount, yCount), colorArray, {
+        // 盒子大小
+        size,
+        // 渲染宽度
+        xCount,
+        // 渲染高度
+        yCount,
+        // 渲染速度
+        speed: 10
+      })
+      await returnPromise(200)
+      await drawLine(canvasContext, { xCount, yCount, size, lineWidth })
+    }
+
+    const drawOnePiece = async (canvasContext, x, y) => {
+      canvasContext.fillRect(x * size, y * size, size, size)
+    }
+
+    /*通过坐标绘制，底面*/
+    const drawCheckerboardBy2dArray = array => {
+      for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array[i].length; j++) {
+          // console.log(array[i][j])
+          let value = array[i][j]
+          if (value === 1) {
+          }
+        }
+      }
+    }
+
+    function main({ xCount, yCount, size, lineWidth }) {
+      var elsCanvas = document.getElementById('els')
+      var canvasContext = elsCanvas.getContext('2d')
+      /*绘制底层表格*/
+      let startGlint = async () => {
+        await drawCheckerboardStart(elsCanvas, {
+          xCount,
+          yCount,
+          size,
+          lineWidth,
+          colorCount: _.random(2, yCount)
+        })
+        setTimeout(() => {
+          startGlint()
+        }, _.random(1500, 2500))
+      }
+      startGlint()
+      /*二维数组数据储存*/
+      // var checkerboard2DCoordinate = buildBlockCoordinate2DArray(xCount, yCount)
+
+      // drawCheckerboardBy2dArray(checkerboard2DCoordinate)
+    }
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    var size = 4
+    main({ xCount: (w / size) | 0, yCount: (h / size) | 0, size: size, lineWidth: 2 })
+  </script>
+</html>
