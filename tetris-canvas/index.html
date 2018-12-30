@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>ELS</title>
+    <style type="text/css">
+      .canvas {
+        text-align: center;
+        font-size: 0;
+      }
+      canvas {
+        min-width: 40px;
+      }
+      body,
+      html {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas"><canvas id="els"></canvas></div>
+  </body>
+  <script src="../utils/lodash.min.js"></script>
+  <script defer>
+    class CanvasRussiaBlock {
+      constructor({ el, x, y, size }) {
+        // super()
+        /*横纵个数*/
+        this.el = el
+        this.x = x
+        this.y = y
+      }
+      setCanvasContext() {
+        let elId = this.el
+        var elsCanvas = document.querySelector(elId)
+        this.ctx = elsCanvas.getContext('2d')
+      }
+    }
+    let russia1 = new CanvasRussiaBlock({
+      el: '.els',
+      x: 20,
+      y: 40,
+      /*单元格大小*/
+      size: 10
+    })
+  </script>
+</html>
