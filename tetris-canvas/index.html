@@ -17,10 +17,31 @@
       html {
         margin: 0;
       }
+      body {
+        margin-top: 140px;
+      }
+      .chess-section {
+        position: relative;
+        display: inline-block;
+      }
+      .onepiece-section {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      #onepiece {
+      }
     </style>
   </head>
   <body>
-    <div class="canvas"><canvas id="els"></canvas></div>
+    <div class="canvas">
+      <section class="chess-section">
+        <canvas id="chess"></canvas>
+        <section class="onepiece-section"><canvas id="onepiece"></canvas></section>
+      </section>
+    </div>
   </body>
   <script src="../utils/lodash.min.js"></script>
   <script defer>
@@ -34,8 +55,26 @@
       let rDiaphaneity = () => _.random(0.5, 1, true).toFixed(2)
       return `rgba(${r0To255()},${r0To255()},${r0To255()},${rDiaphaneity()})`
     }
+    class OnePiece {
+      // 一个方块
+      constructor({ el, x, y }) {
+        this.el = el
+        this.x = x
+        this.y = y
+      }
+      buildPiece2DArray() {
+
+      }
+      pullDown(chessArray) {
+        // 放下
+      }
+      canDown(chessArray) {}
+      canLeft(chessArray) {}
+      canRight(chessArray) {}
+      canRotate(chessArray) {}
+    }
     class CanvasTetris {
-      constructor({ el, x, y, size }) {
+      constructor({ el, x, y, size, bgcArray }) {
         // super()
         /*横纵个数*/
         this.el = el
@@ -43,17 +82,34 @@
         this.y = y
         this.size = size
         // 背景候选颜色
+        this.bgcArray = bgcArray
         // 设置 canvas context  // 初始化 2d 棋盘格的数组
+      }
+      start() {
         this.setBGCArray(2)
           .setctx()
           .buildTetrisChess2DArray()
+          .drawTetrisChess()
+        this.buildOpepiece()
       }
-      setBGCArray(length, baseArray) {
+
+      setBGCArray(length) {
         // 可提供 length 或者自己给颜色数组
         length = length > 1 ? length : 2
-        this.bgcolorArray = baseArray || new Array(length).fill(0).map(v => getRandomColor())
+        this.bgColorArray =
+          this.bgcArray && this.bgcArray.length >= 2
+            ? this.bgcArray
+            : new Array(length).fill(0).map(v => getRandomColor())
         return this
       }
+
+      buildOpepiece() {
+        let onepiece = document.createElement('canvas')
+        this.pieceCtx = onepiece.getContext('2d')
+
+        return this
+      }
+
       setctx() {
         let elId = this.el
         var elCanvas = document.querySelector(elId) || document.getElementById(elId)
@@ -62,6 +118,7 @@
         this.ctx = elCanvas.getContext('2d')
         return this
       }
+
       buildTetrisChess2DArray() {
         let x = this.x
         let y = this.y
@@ -118,8 +175,8 @@
         let x = this.x
         let y = this.y
         let tetrisChess2DArray = this.tetrisChess2DArray
-        let bgcolorArray = this.bgcolorArray
-        let colorArrayLength = bgcolorArray.length
+        let bgColorArray = this.bgColorArray
+        let colorArrayLength = bgColorArray.length
         for (let i = 0; i < tetrisChess2DArray.length; i++) {
           let arrII = tetrisChess2DArray[i]
           for (let j = 0; j < arrII.length; j++) {
@@ -129,7 +186,7 @@
               // TODO 写格子有数据时候的颜色
               color = `rgb(0,0,0)`
             } else {
-              color = bgcolorArray[(i * (y - 1) + j) % colorArrayLength]
+              color = bgColorArray[(i * (y - 1) + j) % colorArrayLength]
             }
             this.drawPicDotByCoordinateAndColor(i, j, color)
             // await creatAPromise()
@@ -139,11 +196,12 @@
       }
     }
     let tetris1 = new CanvasTetris({
-      el: '#els',
+      el: '#chess',
       x: 10,
       y: 20,
-      size: 20
+      size: 20,
+      bgcArray: ['']
     })
-    tetris1.drawTetrisChess()
+    tetris1.start()
   </script>
 </html>
