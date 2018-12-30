@@ -24,26 +24,99 @@
   </body>
   <script src="../utils/lodash.min.js"></script>
   <script defer>
-    class CanvasRussiaBlock {
+    /*返回一个一定时间内完成的 promise*/
+    const creatAPromise = time => {
+      return new Promise(resolve => requestAnimationFrame(resolve))
+      // return new Promise(resolve => setTimeout(resolve, time || 0))
+    }
+    const getRandomColor = () => {
+      let r0To255 = () => _.random(0, 255)
+      let rDiaphaneity = () => _.random(0.5, 1, true).toFixed(2)
+      return `rgba(${r0To255()},${r0To255()},${r0To255()},${rDiaphaneity()})`
+    }
+    class CanvasTetris {
       constructor({ el, x, y, size }) {
         // super()
         /*横纵个数*/
         this.el = el
         this.x = x
         this.y = y
+        this.size = size
+        // 背景候选颜色
+        // 设置 canvas context  // 初始化 2d 棋盘格的数组
+        this.setBGCArray(3)
+          .setctx()
+          .buildTetrisChess2DArray()
       }
-      setCanvasContext() {
+      setBGCArray(length) {
+        length = length > 1 ? length : 2
+        this.bgcolorArray = new Array(length).fill(0).map(v => getRandomColor())
+        return this
+      }
+      setctx() {
         let elId = this.el
-        var elsCanvas = document.querySelector(elId)
-        this.ctx = elsCanvas.getContext('2d')
+        var elCanvas = document.querySelector(elId) || document.getElementById(elId)
+        this.ctx = elCanvas.getContext('2d')
+        return this
+      }
+      buildTetrisChess2DArray() {
+        let x = this.x
+        let y = this.y
+        this.tetrisChess2DArray = new Array(x).fill(0).map(() => new Array(y).fill(0))
+        // console.table(this.tetrisChess2DArray)
+        return this
+      }
+      buildTetrisChess1DArray() {
+        let x = this.x
+        let y = this.y
+        let blockCoordinateArray = []
+        for (let j = 0; j < y; j++) {
+          for (let i = 0; i < x; i++) {
+            blockCoordinateArray.push(`${x},${j}`)
+          }
+        }
+        this.blockCoordinateArray = blockCoordinateArray
+        return this
+      }
+      drawPicDotByCoordinateAndColor(x, y, color) {
+        let ctx = this.ctx
+        let size = this.size
+        ctx.fillStyle = color
+        ctx.fillRect(x * size, y * size, size, size)
+        return this
+      }
+      async drawTetrisChess() {
+        /*绘制底层棋盘*/
+        let x = this.x
+        let y = this.y
+        let tetrisChess2DArray = this.tetrisChess2DArray
+        let bgcolorArray = this.bgcolorArray
+        let colorArrayLength = bgcolorArray.length
+        for (let i = 0; i < tetrisChess2DArray.length; i++) {
+          let arrII = tetrisChess2DArray[i]
+          for (let j = 0; j < arrII.length; j++) {
+            let value = arrII[j]
+            // console.log(value, i, j)
+            let color
+            if (value === 1) {
+              // TODO 写格子有数据时候的颜色
+            } else {
+              color = bgcolorArray[(i * (y - 1) + j) % colorArrayLength]
+            }
+            this.drawPicDotByCoordinateAndColor(i, j, color)
+            await creatAPromise()
+          }
+        }
       }
     }
-    let russia1 = new CanvasRussiaBlock({
-      el: '.els',
-      x: 20,
-      y: 40,
-      /*单元格大小*/
+    let tetris1 = new CanvasTetris({
+      el: '#els',
+      x: 10,
+      y: 20,
       size: 10
     })
+    setInterval(() => {
+      tetris1.setBGCArray(_.random(2, 4)).drawTetrisChess()
+    }, 5000)
   </script>
 </html>
