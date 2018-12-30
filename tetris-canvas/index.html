@@ -44,13 +44,14 @@
         this.size = size
         // 背景候选颜色
         // 设置 canvas context  // 初始化 2d 棋盘格的数组
-        this.setBGCArray(3)
+        this.setBGCArray(2)
           .setctx()
           .buildTetrisChess2DArray()
       }
-      setBGCArray(length) {
+      setBGCArray(length, baseArray) {
+        // 可提供 length 或者自己给颜色数组
         length = length > 1 ? length : 2
-        this.bgcolorArray = new Array(length).fill(0).map(v => getRandomColor())
+        this.bgcolorArray = baseArray || new Array(length).fill(0).map(v => getRandomColor())
         return this
       }
       setctx() {
@@ -87,6 +88,31 @@
         ctx.fillRect(x * size, y * size, size, size)
         return this
       }
+      async drawOutLine(lineWidth) {
+        // 绘制棋盘轮廓
+        let ctx = this.ctx
+        let x = this.x
+        let y = this.y
+        let size = this.size
+        ctx.lineWidth = lineWidth || 1
+        ctx.lineCap = 'round'
+        ctx.strokeStyle = getRandomColor()
+        for (let i = 0; i < x; i++) {
+          const dx = i * size
+          ctx.beginPath()
+          ctx.moveTo(dx, 0)
+          ctx.lineTo(dx, y * size)
+          ctx.stroke()
+        }
+        for (let j = 0; j < y; j++) {
+          const dy = j * size
+          ctx.beginPath()
+          ctx.moveTo(0, dy)
+          ctx.lineTo(x * size, dy)
+          ctx.stroke()
+        }
+        return this
+      }
       async drawTetrisChess() {
         /*绘制底层棋盘*/
         let x = this.x
@@ -98,10 +124,10 @@
           let arrII = tetrisChess2DArray[i]
           for (let j = 0; j < arrII.length; j++) {
             let value = arrII[j]
-            // console.log(value, i, j)
             let color
             if (value === 1) {
               // TODO 写格子有数据时候的颜色
+              color = `rgb(0,0,0)`
             } else {
               color = bgcolorArray[(i * (y - 1) + j) % colorArrayLength]
             }
@@ -109,6 +135,7 @@
             // await creatAPromise()
           }
         }
+        this.drawOutLine()
       }
     }
     let tetris1 = new CanvasTetris({
@@ -117,6 +144,6 @@
       y: 20,
       size: 20
     })
-    tetris1.setBGCArray(_.random(2, 2)).drawTetrisChess()
+    tetris1.drawTetrisChess()
   </script>
 </html>
