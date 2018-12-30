@@ -56,23 +56,53 @@
       return `rgba(${r0To255()},${r0To255()},${r0To255()},${rDiaphaneity()})`
     }
     class OnePiece {
-      // 一个方块
-      constructor({ el, x, y }) {
+      constructor({ el, x, y, size, chess }) {
         this.el = el
         this.x = x
         this.y = y
+        // 所在棋盘
+        this.chesss = []
+        this.position = {
+          x: 0,
+          y: 0
+        }
       }
-      buildPiece2DArray() {
 
+      randomOnePieceData() {
+        /*随机生成方块的坐标*/
+        var randomNum = _.random(0, 7)
+        const resultMap = {
+          0: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]],
+          1: [[1, 0, 0], [1, 1, 1], [0, 0, 0]],
+          2: [[0, 0, 1], [1, 1, 1], [0, 0, 0]],
+          3: [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
+          4: [[1, 1, 0], [0, 1, 1], [0, 0, 0]],
+          5: [[0, 1, 1], [1, 1, 0], [0, 0, 0]],
+          6: [[1, 1], [1, 1]],
+          7: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
+        }
+        return resultMap[randomNum]
+      }
+
+      // 装载到 chess 上，只接收 chess 实例
+      addChess(chess) {
+        chess.addPiece(this)
+      }
+
+      buildPiece2DArray() {
+        this.piece2dArray = this.randomOnePieceData()
+        return this
       }
       pullDown(chessArray) {
         // 放下
       }
+      rotate(chessArray) {}
       canDown(chessArray) {}
       canLeft(chessArray) {}
       canRight(chessArray) {}
       canRotate(chessArray) {}
     }
+
     class CanvasTetris {
       constructor({ el, x, y, size, bgcArray }) {
         // super()
@@ -84,15 +114,20 @@
         // 背景候选颜色
         this.bgcArray = bgcArray
         // 设置 canvas context  // 初始化 2d 棋盘格的数组
+        this.pieces = []
       }
-      start() {
+      init() {
         this.setBGCArray(2)
           .setctx()
           .buildTetrisChess2DArray()
           .drawTetrisChess()
-        this.buildOpepiece()
       }
-
+      addPiece(piece) {
+        if (!this.pieces.includes(piece)) {
+          this.pieces.push(piece)
+          piece.addChess(this)
+        }
+      }
       setBGCArray(length) {
         // 可提供 length 或者自己给颜色数组
         length = length > 1 ? length : 2
@@ -100,13 +135,6 @@
           this.bgcArray && this.bgcArray.length >= 2
             ? this.bgcArray
             : new Array(length).fill(0).map(v => getRandomColor())
-        return this
-      }
-
-      buildOpepiece() {
-        let onepiece = document.createElement('canvas')
-        this.pieceCtx = onepiece.getContext('2d')
-
         return this
       }
 
@@ -138,6 +166,7 @@
         this.blockCoordinateArray = blockCoordinateArray
         return this
       }
+
       drawPicDotByCoordinateAndColor(x, y, color) {
         let ctx = this.ctx
         let size = this.size
@@ -145,6 +174,7 @@
         ctx.fillRect(x * size, y * size, size, size)
         return this
       }
+
       async drawOutLine(lineWidth) {
         // 绘制棋盘轮廓
         let ctx = this.ctx
@@ -202,6 +232,6 @@
       size: 20,
       bgcArray: ['']
     })
-    tetris1.start()
+    tetris1.init()
   </script>
 </html>
