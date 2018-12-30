@@ -39,7 +39,7 @@
     }
 
     /*返回一个一定时间内完成的 promise*/
-    const returnPromise = time => {
+    let returnPromise = time => {
       return new Promise(resolve => requestAnimationFrame(resolve))
       // return new Promise(resolve => setTimeout(resolve, time || 0))
     }
