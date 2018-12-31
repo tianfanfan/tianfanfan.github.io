@@ -11,6 +11,8 @@ const getRandomColor = () => {
 }
 class OnePiece {
   constructor({ el, x, y, size, chess }) {
+    this.autoDownState = null
+    this.timer = null
     this.el = el
     // 设置的 棋盘大小
     this.x = x
@@ -68,6 +70,17 @@ class OnePiece {
     this.elCanvas = elCanvas
     return this
   }
+  startDown(speed) {
+    // 开始下落
+    this.autoDownState = true
+    this.timer = setInterval(() => {
+      if (this.getCanDownState()) {
+        this.pullDown()
+      } else {
+        clearInterval(this.timer)
+      }
+    }, speed | 500)
+  }
   build2DArray() {
     // 创建 2D 数组数据和定位数据
     this.piece2dDataArray = this.randomOnePieceData()
@@ -84,8 +97,11 @@ class OnePiece {
   }
   changeDomPosition() {
     let size = this.size
-    this.elCanvas.style.left = this.position.x * size + 'px'
-    this.elCanvas.style.top = this.position.y * size + 'px'
+    // debugger
+    this.elCanvas.style.transform = `translateX(${this.position.x *
+      size}px) rotate(0deg) translateY(${this.position.y * size}px)`
+    // this.elCanvas.style.left = this.position.x * size + 'px'
+    // this.elCanvas.style.top = this.position.y * size + 'px'
   }
   async drawPic() {
     let piece2dDataArray = this.piece2dDataArray
@@ -105,9 +121,9 @@ class OnePiece {
         } else {
           color = `rgb(255,255,255)`
         }
-        // await creatAPromise()
       }
     }
+    await creatAPromise()
   }
   rotate(chessArray) {}
   getCanDownState() {
@@ -115,7 +131,7 @@ class OnePiece {
     let pY = this.position.y
     let x = this.x
     let y = this.y
-    if (pX > x || pY > y) {
+    if (pX >= x || pY >= y) {
       // 剪枝
       return false
     }
@@ -125,14 +141,23 @@ class OnePiece {
       console.log(chess)
     })
   }
-  pullDown() {
-    if (this.getCanDownState()) {
-      // 放下
-      this.setPosition({
-        x: this.position.x,
-        y: this.position.y + 1
-      })
-    }
+  async pullDown() {
+    // 放下
+    this.setPosition({
+      x: this.position.x,
+      y: this.position.y + 1
+    })
+
+    await creatAPromise()
+    return this
+  }
+  async moveLeft() {
+    this.setPosition({
+      x: this.position.x + 1,
+      y: this.position.y
+    })
+    await creatAPromise()
+    return this
   }
   setPosition({ x, y }) {
     let oldx = this.position.x
@@ -140,7 +165,7 @@ class OnePiece {
     this.position.x = x
     this.position.y = y
     if (oldx !== x || oldy !== y) {
-      // 一定重绘
+      // 一定重定义位置
       this.changeDomPosition()
     }
   }
