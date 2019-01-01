@@ -42,14 +42,16 @@ class OnePiece {
     /*随机生成方块的坐标*/
     var randomNum = _.random(0, 7)
     const resultMap = {
-      0: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]],
+      0: [[1, 0], [1, 0], [1, 0], [1, 0]],
+      // 0: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]],
       1: [[1, 0, 0], [1, 1, 1], [0, 0, 0]],
       2: [[0, 0, 1], [1, 1, 1], [0, 0, 0]],
       3: [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
       4: [[1, 1, 0], [0, 1, 1], [0, 0, 0]],
       5: [[0, 1, 1], [1, 1, 0], [0, 0, 0]],
       6: [[1, 1], [1, 1]],
-      7: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
+      7: [[0, 1], [0, 1], [0, 1], [0, 1]]
+      // 7: [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
     }
     return resultMap[randomNum]
   }
@@ -70,16 +72,19 @@ class OnePiece {
     this.elCanvas = elCanvas
     return this
   }
-  startDown(speed) {
+  start(speed) {
     // 开始下落
     this.autoDownState = true
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
     this.timer = setInterval(() => {
       if (this.getCanDownState()) {
         this.pullDown()
       } else {
         clearInterval(this.timer)
       }
-    }, speed | 500)
+    }, speed || 500)
   }
   build2DArray() {
     // 创建 2D 数组数据和定位数据
@@ -95,18 +100,19 @@ class OnePiece {
     ctx.fillRect(x * size, y * size, size, size)
     return this
   }
-  changeDomPosition() {
+  changeDomTransition() {
     let size = this.size
-    // debugger
-    this.elCanvas.style.transform = `translateX(${this.position.x *
-      size}px) rotate(0deg) translateY(${this.position.y * size}px)`
-    // this.elCanvas.style.left = this.position.x * size + 'px'
-    // this.elCanvas.style.top = this.position.y * size + 'px'
+    // this.elCanvas.style.transform = `translateX(${this.position.x * size}px) rotate(${
+    //   this.rotateDeg
+    // }deg) translateY(${this.position.y * size}px)`
+    this.elCanvas.style.transform = `rotate(${this.rotateDeg}deg)`
+    this.elCanvas.style.left = this.position.x * size + 'px'
+    this.elCanvas.style.top = this.position.y * size + 'px'
   }
   async drawPic() {
     let piece2dDataArray = this.piece2dDataArray
     // 第一次先设置位置，再画 canvas
-    this.changeDomPosition()
+    this.changeDomTransition()
     for (let i = 0; i < piece2dDataArray.length; i++) {
       let arrII = piece2dDataArray[i]
       for (let j = 0; j < arrII.length; j++) {
@@ -125,7 +131,10 @@ class OnePiece {
     }
     await creatAPromise()
   }
-  rotate(chessArray) {}
+  rotate() {
+    this.rotateDeg = (this.rotateDeg + 90) % 360
+    this.changeDomTransition()
+  }
   getCanDownState() {
     let pX = this.position.x
     let pY = this.position.y
@@ -153,10 +162,16 @@ class OnePiece {
   }
   async moveLeft() {
     this.setPosition({
+      x: this.position.x - 1,
+      y: this.position.y
+    })
+    return this
+  }
+  async moveRight() {
+    this.setPosition({
       x: this.position.x + 1,
       y: this.position.y
     })
-    await creatAPromise()
     return this
   }
   setPosition({ x, y }) {
@@ -166,15 +181,11 @@ class OnePiece {
     this.position.y = y
     if (oldx !== x || oldy !== y) {
       // 一定重定义位置
-      this.changeDomPosition()
+      this.changeDomTransition()
     }
   }
   deepPullDown() {
-    if (this.getCanDownState()) {
-      // 放下
-      this.position.y = this.position.y + 1
-      this.deepPullDown()
-    }
+    this.start(1)
   }
   canLeft(chessArray) {}
   canRight(chessArray) {}
@@ -308,18 +319,49 @@ class CanvasTetris {
     this.drawOutLine()
   }
 }
-let tetrisFoo = new CanvasTetris({
-  el: '#chess',
-  x: 10,
-  y: 20,
-  size: 20,
-  bgcArray: ['']
-})
-let pieceBar = new OnePiece({
-  el: '#onepiece',
-  x: 10,
-  y: 20,
-  size: 20
-})
-tetrisFoo.autoInit()
-pieceBar.autoInit()
+
+function main() {
+  let tetrisFoo = new CanvasTetris({
+    el: '#chess',
+    x: 10,
+    y: 20,
+    size: 20,
+    bgcArray: ['']
+  })
+  let pieceBar = new OnePiece({
+    el: '#onepiece',
+    x: 10,
+    y: 20,
+    size: 20
+  })
+  pieceBar.start()
+  document.addEventListener('keydown', e => {
+    console.log(e)
+    e.stopPropagation()
+    e.preventDefault()
+    if (e.keyCode === 38) {
+      // ↑ 按钮
+      pieceBar.rotate()
+      return
+    }
+    if (e.keyCode === 37) {
+      // ← 按钮
+      pieceBar.moveLeft()
+      return
+    }
+    if (e.keyCode === 39) {
+      // ← 按钮
+      pieceBar.moveRight()
+      return
+    }
+
+    if (e.keyCode === 32) {
+      // ← 按钮
+      pieceBar.deepPullDown()
+      return
+    }
+  })
+  tetrisFoo.autoInit()
+  pieceBar.autoInit()
+}
+main()
