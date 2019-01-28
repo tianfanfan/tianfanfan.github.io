@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/vue-recycle-demo-2/precache-manifest.e1a34d70fcc2ddb75310f36bc30f0d4c.js"
+  "/vue-recycle-demo-2/precache-manifest.05a36d24c154a7e4852d83ee5c104708.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "vue-long-list"});
