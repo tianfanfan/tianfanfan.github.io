@@ -22,7 +22,8 @@
     <footer>
       <button class="Bpause">pa</button> <button class="Bt">↑</button>
       <button class="Bgo">go</button> <br />
-      <button class="Bl">←</button> <button class="Bb">↓</button> <button class="Br">→</button>
+      <button class="Bl">←</button> <button class="Bb">↓</button>
+      <button class="Br">→</button>
       <br />
       <button class="Bdown" style="width: 120px">↓down↓</button>
     </footer>
@@ -143,11 +144,11 @@
   var speed1 = 500
   var speed2 = 300
   var gameover = false
-  var main = document.querySelector('main')
-  var footer = document.querySelector('footer')
-  var speedSection = document.querySelector('.speed-section')
-  speedSection.addEventListener('click', function(e) {
-    if (e.target.classList.contains('upspeed')) {
+  var main = document.querySelector("main")
+  var footer = document.querySelector("footer")
+  var speedSection = document.querySelector(".speed-section")
+  speedSection.addEventListener("click", function(e) {
+    if (e.target.classList.contains("upspeed")) {
       speed1 -= 20
       speed2 -= speed2 < 170 ? 0 : 10
       console.log(`......speed up succeed!`)
@@ -157,44 +158,44 @@
         )
       }
     }
-    if (e.target.classList.contains('downspeed')) {
+    if (e.target.classList.contains("downspeed")) {
       speed1 += 20
       speed2 += speed2 > 400 ? 0 : 10
       console.log(`......speed down succeed!`)
     }
   })
-  footer.addEventListener('click', function(e) {
+  footer.addEventListener("click", function(e) {
     e.preventDefault()
     e.stopPropagation()
 
-    if (e.target.classList.contains('Bt')) {
+    if (e.target.classList.contains("Bt")) {
       block1.changeOneBlock()
     }
-    if (e.target.classList.contains('Bl')) {
+    if (e.target.classList.contains("Bl")) {
       var LAndR = isDownTOdeepleftOrRight()
       if (LAndR.left) {
         block1.x--
       }
     }
-    if (e.target.classList.contains('Br')) {
+    if (e.target.classList.contains("Br")) {
       var LAndR = isDownTOdeepleftOrRight()
       if (LAndR.right) {
         block1.x++
       }
     }
-    if (e.target.classList.contains('Bb')) {
+    if (e.target.classList.contains("Bb")) {
       if (!isDownTodeepload()) block1.y++
     }
-    if (e.target.classList.contains('Bdown')) {
+    if (e.target.classList.contains("Bdown")) {
       while (!isDownTodeepload()) {
         block1.y++
       }
     }
-    if (e.target.classList.contains('Bpause')) {
+    if (e.target.classList.contains("Bpause")) {
       pause = true
       clearTimeout(timeoutID)
     }
-    if (e.target.classList.contains('Bgo') && pause) {
+    if (e.target.classList.contains("Bgo") && pause) {
       pause = false
       timeoutID = setTimeout(downBlock, speed1)
     }
@@ -289,7 +290,7 @@
     drawOneBlock() {
       var arr = this.arr
       var l = arr.length
-      var onepiece = document.createElement('section')
+      var onepiece = document.createElement("section")
       // console.log(this.x,this.y);
       // onepiece.style.color="red"
       onepiece.style.transform = `translate(${this.x * 10}px, ${this.y * 10}px)`
@@ -297,8 +298,8 @@
       onepiece.style.height = `${10 * l}px`
       for (var i = 0; i < l; i++) {
         for (var j = 0; j < arr[i].length; j++) {
-          var div = document.createElement('div')
-          div.style.backgroundColor = arr[i][j] == 1 ? 'black' : 'transparent'
+          var div = document.createElement("div")
+          div.style.backgroundColor = arr[i][j] == 1 ? "black" : "transparent"
           onepiece.appendChild(div)
         }
       }
@@ -306,7 +307,7 @@
       return this
     }
     removeBlock() {
-      var oldsection = document.querySelector('section')
+      var oldsection = document.querySelector("section")
       // console.log(main, oldsection);
       main.removeChild(oldsection)
     }
@@ -317,9 +318,9 @@
 
   //方块构造器
   ;(function a() {
-    document.body.addEventListener('keydown', function keyF(e) {
+    document.body.addEventListener("keydown", function keyF(e) {
       if (gameover) {
-        document.body.removeEventListener('keydown', keyF)
+        document.body.removeEventListener("keydown", keyF)
       }
       var l = block1.arr.length
       if (e.keyCode == 38) {
@@ -390,7 +391,10 @@
           if (chessbord[y + i] == undefined) {
             continue
           }
-          if (chessbord[y + i][x + j - 1] == undefined || chessbord[y + i][x + j - 1] == 1) {
+          if (
+            chessbord[y + i][x + j - 1] == undefined ||
+            chessbord[y + i][x + j - 1] == 1
+          ) {
             LAndR.left = false
             break
             // console.log(y, x + j - 1);
@@ -404,7 +408,10 @@
           if (chessbord[y + i] == undefined) {
             continue
           }
-          if (chessbord[y + i][x + l - j] == undefined || chessbord[y + i][x + l - j] == 1) {
+          if (
+            chessbord[y + i][x + l - j] == undefined ||
+            chessbord[y + i][x + l - j] == 1
+          ) {
             LAndR.right = false
             break
           }
@@ -427,7 +434,7 @@
       for (var j = 0; j < l1; j++) {
         var chessbordpiece = document.createElement(`div`)
         chessbordpiece.classList.add(`chessbordpiece`)
-        chessbordpiece.style.backgroundColor = '#eeeeee'
+        chessbordpiece.style.backgroundColor = "#eeeeee"
         chessbordpiece.style.left = `${i * 10}px`
         chessbordpiece.style.top = `${j * 10}px`
         main.appendChild(chessbordpiece)
@@ -449,10 +456,10 @@
     for (var i = 0; i < lx; i++) {
       for (var j = 0; j < ly; j++) {
         if (chessbord[j][i] == 1) {
-          chessbord.domArr[i * ly + j].style.backgroundColor = 'rgba(0,0,0,0.9)'
+          chessbord.domArr[i * ly + j].style.backgroundColor = "rgba(0,0,0,0.9)"
         }
         if (chessbord[j][i] == 0) {
-          chessbord.domArr[i * ly + j].style.backgroundColor = 'transparent'
+          chessbord.domArr[i * ly + j].style.backgroundColor = "transparent"
         }
       }
     }
@@ -538,8 +545,8 @@
     if (!deepOrnot) {
       if (block1.y <= 0) {
         clearInterval(timeoutID)
-        console.log('game over')
-        document.querySelector('aside').innerText = `game over~~`
+        console.log("game over")
+        document.querySelector("aside").innerText = `game over~~`
         gameover = true
         return
         //geme over
@@ -587,7 +594,7 @@
     if (result) {
       score += Math.pow(2, scoreadd - 1)
       scoreadd = 0
-      document.querySelector('aside').innerText = `分数:${score}`
+      document.querySelector("aside").innerText = `分数:${score}`
       // console.log(".......score", score);
     }
     return result
@@ -595,11 +602,10 @@
 
   function animationdelete(j, l) {
     var k = 0
-
     function a() {
       if (k < 10) {
         for (var i = 0; i < l; i++) {
-          chessbord.domArr[j - i + k * 20].style.backgroundColor = 'red'
+          chessbord.domArr[j - i + k * 20].style.backgroundColor = "red"
         }
         k++
         requestAnimationFrame(a)
