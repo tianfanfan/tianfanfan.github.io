@@ -216,14 +216,18 @@ const result = bar()
 
   这段代码，有两个问题。
   + 你会发现，又多了两层作用域，一个被 `try` 包住，一个被 `catch` 包住。这是 `try / catch` 避免不了的，也不算缺点。
-  + 你彻底抛弃了 `promise rejected` 、 `promise.then(fn,fn)` 、 `promise.catch(fn)` 这种流程控制。将其视为和其他情形的 error 是相同的处理流程。（例如：运算错误，或其他自定义的错误）也就意味着，任何错误，一并处理，都进 `catch` 处理。认为不该区分 `rejected` 的 `promise` 和 `throw` 的。而实际上是有区分的。不该如此。
+  + 你彻底抛弃了 `promise rejected` 、 `promise.then(fn,fn)` 、 `promise.catch(fn)` 这种流程控制。将其视为和其他情形的 `error` 是相同的处理流程。（例如：运算错误，或其他自定义的错误）也就意味着，任何错误，一并处理，都进 `catch` 处理。认为不该区分 `rejected` 的 `promise` 和 `throw` 的。而实际上是有一定区别的。不该如此。
 
 ## 总结
+  异步函数把函数和 `promise` 结合起来了，最终导致了 `promise.catch` 和 `try / catch` 的相互冲突（或者说混合），处理流程的写法，非常不友好。
+
   也许，你认为，`rejected` 就是异常啊，用只该用 `catch` 捕获。
 
   也许，你认为，`promise rejected` 的情况，混着 `error` 的里，异步函数这种处理，就是不对的做法，没法分辨。
 
-  但目前而言，当你使用了异步函数时候，要么放弃 `rejected` 状态，要么放弃区分 `rejected` 和 `throw error`，默认 `rejected` 完全等于一个`error`。等于，你的错误逻辑，都是用 `error`。
+  但目前而言，当你使用了异步函数时候，要么放弃 `rejected` 状态，放弃了自带的错误冒泡机制，你必须手动实现错误上报。而且最好是只报一个错误对象。
+
+  要么放弃 `rejected` 和 `throw error` 的区别，默认 `rejected` 完全等于一个 `error`，即，你的错误逻辑，都是用 `error`。
 
   人们往往在遵循这规范，规定，约定，等，这些看起来靠谱，以后也一定靠谱的条目。
 
