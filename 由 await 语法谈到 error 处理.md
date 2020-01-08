@@ -1,11 +1,13 @@
-#### 为什么 js 里使用了await 的方法必须定义成 async 的
+# 由 await 语法谈到 error 处理
+
+## 为什么 js 里使用了await 的方法必须定义成 async 的
 [为什么js里使用了await 的方法必须定义成async的](https://www.zhihu.com/question/308089255/answer/963408684)
 
 其实开始回答这个问题时候，我本能感觉，这问题没意义，原因很简单，这个问题归根结底就六个字：语言语法规定。问出这个问题，提问者本身对 `JS` 语言了解程度不够高，或者对其历史了解不够。就像问你声明变量为什么要加 `var` 一样，该问题毫无意义。
 
 后来在一个技术群里，讨论到这个话题，提出了一个深层次的问题 **语法为什么要这么定义**。
 
-#### 语法为什么要这么定义
+## 语法为什么要这么定义
 
 说起 `JS` ，历史长河滚滚流。它已经不是以前那个 `JS` 了。
 
@@ -32,7 +34,7 @@ async function asyncFn3(){}
 
 来看看已经确定以及没确定的，需要注意的一些细节。
 
-#### 语法的细节
+## 语法的细节
 
 1. await 后跟 promise 实例
 
@@ -59,7 +61,7 @@ async function asyncFn3(){}
 
   上文说道 `await` 只处理 `promise resolved` 的情况，那错误处理该如何做流程控制呢？
 
-#### async / await 语法中遇到错误的情况
+## async / await 语法中遇到错误的情况
 
 这里不分析，语法使用错误。
 
@@ -157,7 +159,7 @@ const result = bar()
 
 让在当前函数就地处理错误异常变得异常艰难，不知道是该用 `try/catch` 还是 `promise.catch` 。
 
-#### async / await 语法中的错误处理
+## async / await 语法中的错误处理
 
 常见的错误处理，`JS` 是使用 `try/catch` 来捕获，如果想捕获全局错误，页面里面（简单办法 `window.onerror` 回调）
 
@@ -216,7 +218,7 @@ const result = bar()
   + 你会发现，又多了两层作用域，一个被 `try` 包住，一个被 `catch` 包住。这是 `try / catch` 避免不了的，也不算缺点。
   + 你彻底抛弃了 `promise rejected` 、 `promise.then(fn,fn)` 、 `promise.catch(fn)` 这种流程控制。将其视为和其他情形的 error 是相同的处理流程。（例如：运算错误，或其他自定义的错误）也就意味着，任何错误，一并处理，都进 `catch` 处理。认为不该区分 `rejected` 的 `promise` 和 `throw` 的。而实际上是有区分的。不该如此。
 
-#### 总结
+## 总结
   也许，你认为，`rejected` 就是异常啊，用只该用 `catch` 捕获。
 
   也许，你认为，`promise rejected` 的情况，混着 `error` 的里，异步函数这种处理，就是不对的做法，没法分辨。
@@ -229,4 +231,4 @@ const result = bar()
 
   <!-- 就像马克思说的一句话，"怀疑一切"。 -->
 
-#### 结束
+## 结束
