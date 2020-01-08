@@ -189,8 +189,8 @@ const result = bar()
   如文章所示的较好处理办法，将其转化成一个 `resolved` 的 `promise` ，并使用其 `err` 作为一个有效的 `resolved` 结果。让 `await` 始终接收一个 `resolved` 的 `promise` 。 `err` 就是错误对象，可以是 `new Error` 出来的，也可是` promise.reject(1)` 出来的这种任意类型。
 
   这段代码，有两个问题:
-  + 强制修改了 `promise` 的状态，让其换成 `resolved` 状态，并被 `await` 接受。虽然你能处理部分你可以处理的错误，但是却同时接收了你可能不能处理的错误。
-  + 你默认了 `findOne` 出来一定是一个 `promise` ，否则，你的 `.then` 执行就是错误的语法。
+  + 强制修改了 `promise` 的状态，让其换成 `resolved` 状态，并被 `await` 接受。如果接受此方案，后续的所有操作，都必须按照解构赋值来获取 `data` 和 `err `。假设多层嵌套，多层都有 `err` ，外层就无法继续保留内层 `err`，只能有一个 `err` 返回，后续几乎没法做错误的统一处理。
+  + 你默认了 `findOne` 出来一定是一个 `promise` ，否则，你的 `then` 执行就是错误的语法，但是却没有捕获到。这种其他类型的错误仍需要 `try / catch` 来获取。
 
 2. try / catch 就地处理，处理不了往上冒
   ```js
