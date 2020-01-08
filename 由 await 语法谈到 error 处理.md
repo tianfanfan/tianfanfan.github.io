@@ -187,9 +187,8 @@ const result = bar()
   如文章所示的较好处理办法，将其转化成一个 `resolved` 的 `promise` ，并使用其 `err` 作为一个有效的 `resolved` 结果。让 `await` 始终接收一个 `resolved` 的 `promise` 。 `err` 就是错误对象，可以是 `new Error` 出来的，也可是` promise.reject(1)` 出来的这种任意类型。
 
   这段代码，有两个问题:
-
-    1. 强制修改了 `promise` 的状态，让其换成 `resolved` 状态，并被 `await` 接受。虽然你能处理部分你可以处理的错误，但是却同时接收了你可能不能处理的错误。
-    2. 你默认了 `findOne` 出来一定是一个 `promise` ，否则，你的 `.then` 执行就是错误的语法。
+  + 强制修改了 `promise` 的状态，让其换成 `resolved` 状态，并被 `await` 接受。虽然你能处理部分你可以处理的错误，但是却同时接收了你可能不能处理的错误。
+  + 你默认了 `findOne` 出来一定是一个 `promise` ，否则，你的 `.then` 执行就是错误的语法。
 
 2. try / catch 就地处理，处理不了往上冒
   ```js
@@ -214,8 +213,8 @@ const result = bar()
   如上诉代码，在任何错误处理流程中都是正确的写法。 `catch` 里面的 `error` 对象，就是你 `reject` 插入的值。
 
   这段代码，有两个问题。
-    1. 你会发现，又多了两层作用域，一个被 `try` 包住，一个被 `catch` 包住。这是 `try / catch` 避免不了的，也不算缺点。
-    2. 你彻底抛弃了 `promise rejected` 、 `promise.then(fn,fn)` 、 `promise.catch(fn)` 这种流程控制。将其视为和其他情形的 error 是相同的处理流程。（例如：运算错误，或其他自定义的错误）也就意味着，任何错误，一并处理，都进 `catch` 处理。认为不该区分 `rejected` 的 `promise` 和 `throw` 的。而实际上是有区分的。不该如此。
+  + 你会发现，又多了两层作用域，一个被 `try` 包住，一个被 `catch` 包住。这是 `try / catch` 避免不了的，也不算缺点。
+  + 你彻底抛弃了 `promise rejected` 、 `promise.then(fn,fn)` 、 `promise.catch(fn)` 这种流程控制。将其视为和其他情形的 error 是相同的处理流程。（例如：运算错误，或其他自定义的错误）也就意味着，任何错误，一并处理，都进 `catch` 处理。认为不该区分 `rejected` 的 `promise` 和 `throw` 的。而实际上是有区分的。不该如此。
 
 #### 总结
   也许，你认为，`rejected` 就是异常啊，用只该用 `catch` 捕获。
