@@ -227,7 +227,7 @@ const result = bar()
 
   但目前而言，当你使用了异步函数时候，要么放弃 `rejected` 状态，放弃了自带的错误冒泡机制，你必须手动实现错误上报。而且最好是只报一个错误对象。
 
-  要么放弃 `rejected` 和 `throw error` 的区别，默认 `rejected` 完全等于一个 `error`，即，你的错误逻辑，都是用 `error`。
+  要么放弃 `rejected` 和 `throw error` 的区别，默认 `rejected` 完全等于一个 `throw`，你的错误逻辑，都是用 `error`。
 
   人们往往在遵循这规范，规定，约定，等，这些看起来靠谱，以后也一定靠谱的条目。
 
