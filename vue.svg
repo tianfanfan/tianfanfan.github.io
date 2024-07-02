@@ -1,0 +1,28 @@
+<svg width="43" height="42" viewBox="0 0 43 42" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="43" height="42" fill="black"/>
+<rect id="&#230;&#181;&#143;&#232;&#167;&#136;&#229;&#153;&#168;&#230;&#161;&#134;&#230;&#158;&#182;" x="-931" y="-486" width="1920" height="959" fill="url(#pattern0_0_1)"/>
+<g id="&#233;&#161;&#181;&#233;&#157;&#162;&#229;&#134;&#133;&#229;&#174;&#185;">
+<rect width="1905" height="3369" transform="translate(-931 -399)" fill="white"/>
+<g id="body">
+<g id="&#228;&#184;&#187;&#229;&#174;&#185;&#229;&#153;&#168;">
+<g id="&#230;&#150;&#135;&#231;&#171;&#160;&#229;&#174;&#185;&#229;&#153;&#168;">
+<g id="&#229;&#136;&#134;&#230;&#148;&#175;&#232;&#183;&#179;&#232;&#189;&#172;">
+<g id="vue">
+<rect x="-33" y="-19.5" width="109" height="109" stroke="black" stroke-opacity="0.12"/>
+<g id="vscode-icons:file-type-vue">
+<path id="Vector" d="M32.525 5.15156H39.875L21.5 36.8484L3.125 5.15156H17.1819L21.5 12.5016L25.7262 5.15156H32.525Z" fill="#41B883"/>
+<path id="Vector_2" d="M3.125 5.15156L21.5 36.8484L39.875 5.15156H32.525L21.5 24.1697L10.3831 5.15156H3.125Z" fill="#41B883"/>
+<path id="Vector_3" d="M10.3831 5.15156L21.5 24.2616L32.525 5.15156H25.7262L21.5 12.5016L17.1819 5.15156H10.3831Z" fill="#35495E"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<pattern id="pattern0_0_1" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_0_1" transform="scale(0.000260417 0.000521376)"/>
+</pattern>
+</defs>
+</svg>
